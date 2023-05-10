@@ -25,7 +25,6 @@ export const loadReference=async (n)=>{
     if (!refs.length) return;
 
     selectedRef.set(n)
-
     const response=await fetch(refs[n].url);
     const content=await response.text();
     loadCMText( content,1)

@@ -15,6 +15,7 @@ export const markOfftext=(cm,line,segs=null,lines=null)=>{
 }
 export const loadCMText=(text,_cm=0)=>{
     const cm=_cm?get(cm1):get(cm2);
+    const line=cm.getCursor().line;
     cm.doc.setValue(text);
     const lines=text.split('\n');
     const segs=[];
@@ -26,6 +27,7 @@ export const loadCMText=(text,_cm=0)=>{
     if (segs[0] !==0 ) segs.unshift(0); //upper boundary
     segs.push(lines.length); //lower boundary
     segments.set(segs);
+    cm.setCursor({line});
     return lines.length;
 
 }
