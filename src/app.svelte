@@ -1,35 +1,38 @@
 <script>
 import {onMount} from 'svelte'
+import {get} from 'svelte/store'
 import Toolbar from './toolbar.svelte'
 import SplitPane from './3rdparty/splitpane.svelte';
-import {testdata} from './test.js'
+import {helptext} from './help.js'
+import {cm1,cm2} from './store.js';
 import {beforeChange, cursorActivity,loadCMText} from './editor.ts'
 let lefteditor,righteditor;
 
-let cm1,cm2, pos=40;
+let pos=45;
 onMount(()=>{
-    cm1 = new CodeMirror(lefteditor, {
-	    value:'NO SOURCE\nasdfasdf\nadsfasdf',lineWrapping:true,
+    const refer=new CodeMirror(lefteditor, {
+	    value:'',lineWrapping:true,
          readOnly:true,theme:'ambiance',styleActiveLine:true
     })
-    cm2 = new CodeMirror(righteditor, {lineWrapping:true,
-        lineNumbers:true,
+    cm1.set(refer);
+
+    cm2.set(new CodeMirror(righteditor, {lineWrapping:true,
 	    value:'', theme:'ambiance',styleActiveLine:true
-    })
+    }))
 
-    cm2.on("cursorActivity",(cm,obj)=>cursorActivity(cm,cm1));
-    cm2.on("beforeChange",beforeChange);
+    get(cm2).on("cursorActivity",(cm,obj)=>cursorActivity(cm,refer));
+    get(cm2).on("beforeChange",beforeChange);
 
-    loadCMText(cm1,testdata);
-    loadCMText(cm2,testdata);
+    loadCMText("工作區");
+    loadCMText(helptext,1);
 })
 
 function handleKeydown(evt) {
     const key=evt.key.toLowerCase();
     const alt=evt.altKey;
     if (key=='f5') {//prevent refresh accidently
-        // evt.preventDefault();
-        // return;
+        evt.preventDefault();
+        return;
     }
 }
 </script>

@@ -1,5 +1,5 @@
 import {bsearchNumber,OFFTAG_REGEX_G} from 'ptk';
-import {segments} from './store.js';
+import {dirty,segments,cm1,cm2,cursorline} from './store.js';
 import {get} from 'svelte/store';
 
 export const markOfftext=(cm,line,segs=null,lines=null)=>{
@@ -13,8 +13,9 @@ export const markOfftext=(cm,line,segs=null,lines=null)=>{
     });
     return segs;
 }
-export const loadCMText=(cm,text)=>{
-    cm.setValue(text);
+export const loadCMText=(text,_cm=0)=>{
+    const cm=_cm?get(cm1):get(cm2);
+    cm.doc.setValue(text);
     const lines=text.split('\n');
     const segs=[];
     cm.operation(()=>{
@@ -25,6 +26,8 @@ export const loadCMText=(cm,text)=>{
     if (segs[0] !==0 ) segs.unshift(0); //upper boundary
     segs.push(lines.length); //lower boundary
     segments.set(segs);
+    return lines.length;
+
 }
 export const segmentOfLine=line=>{ // get the segment of line, begin with n
     const segs=get(segments);
@@ -34,6 +37,9 @@ export const segmentOfLine=line=>{ // get the segment of line, begin with n
 export const cursorActivity=(cm:CodeMirror, cmrefer:CodeMirror)=>{
     const cursor=cm.getCursor();
     cmrefer.doc.setCursor({line:cursor.line,ch:0})
+    cursorline.set(cursor.line+1)
+
+    syncScroll(get(cm1),get(cm2));
 }
 export const replaceSeg=(cm,nseg,lines)=>{
     const segs=get(segments);
@@ -53,6 +59,28 @@ export const getSegmentText=(cm,segs,nseg)=>{
     }
     return out;
 }
+
+
+let isScrolling=false;
+const syncScroll=(cm1,cm2)=>{
+    if (isScrolling )return;
+    isScrolling=true;
+
+    const line1=cm1.getCursor().line;
+    const line2=cm2.getCursor().line;
+
+    const si=cm2.getScrollInfo();
+    const top2=cm2.heightAtLine(line2,'local');
+    const distance2=top2-si.top;
+
+    const top1=cm1.heightAtLine(line2,'local');
+
+    cm1.scrollTo( 0,  top1-distance2);
+
+    isScrolling=false;
+    return false;
+}
+
 export const joinline=(cm,line)=>{
     const segs=get(segments);
     const nseg=segmentOfLine(line);
@@ -70,7 +98,7 @@ export const joinline=(cm,line)=>{
     lines=s.split('\n');
     while (lines.length<linecount) lines.push('');
     replaceSeg(cm,nseg,lines);
-    cm.setCursor(cursor)
+    cm.setCursor(cursor);
 }
 
 export const breakline=(cm,line,ch)=>{
@@ -103,7 +131,7 @@ export const breakline=(cm,line,ch)=>{
 }
 export const beforeChange=(cm:CodeMirror,obj)=>{
     const {origin,text,to,from,cancel}=obj;
-
+    if (origin=='setValue') return;
     const cursor=cm.getCursor();
     const marks=cm.doc.findMarksAt(cursor);
     if (marks.length) {
@@ -116,12 +144,19 @@ export const beforeChange=(cm:CodeMirror,obj)=>{
     if (origin=='+delete') { //join
         if (to.line==from.line+1 && to.ch==0) {
             joinline(cm,to.line);
+            dirty.set(true);
         }
         cancel();
     } else if (origin=='+input') {
         if (text.length==2 && text.join('')=='') {
-            breakline(cm,from.line,from.ch);                  
+            breakline(cm,from.line,from.ch);
+            dirty.set(true);            
         }
         cancel();
     }   
+}
+
+export const setCursorLine=(line)=>{
+    get(cm2).setCursor({line:line-1});
+    return line;
 }
