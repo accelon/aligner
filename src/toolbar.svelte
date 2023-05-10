@@ -32,14 +32,20 @@ async function save(){
 }
 
 </script>
-<button disabled={$dirty} title="alt-p" class="clickable" on:click={openOff}>📂</button>
-<button disabled={!$dirty} title="alt-s" on:click={save}>💾</button>
+<div class="Toolbar">
+<span style="font-size:120%">逐句對齊</span><span>　ver 2023.5.10</span>
 {#each $references as reference,idx}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <span class="clickable" class:selectedRef={$selectedRef==idx} on:click={()=>loadReference(idx)}>{reference.name}</span>　
 {/each}
 
-<span style="float:right"><InputNumber bind:value={$cursorline} onChange={setCursorLine} min={1} {max}/></span>
+<span style="float:right">
+<button disabled={$dirty} title="alt-p" class="clickable" on:click={openOff}>📂</button>
+<button disabled={!$dirty} title="alt-s" on:click={save}>💾</button>
+<InputNumber bind:value={$cursorline} onChange={setCursorLine} min={1} {max}/></span>
+</div>
+
 <style>
+.Toolbar {height: 1.5em;}
 .selectedRef {background:lightyellow;color:black}
 </style>

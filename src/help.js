@@ -1,4 +1,4 @@
-export const helptext=`  逐句對齊  操作說明
+export const helptext=`
 📂打開工作文件 alt-o   💾儲存工作文件（會要求授權）alt-s
 打開文件後，最上方顯示可參考對齊之文本。
 
