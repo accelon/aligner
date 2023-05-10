@@ -49,8 +49,9 @@ export const replaceSeg=(cm,nseg,lines)=>{
         const markers=cm.doc.findMarks({line:segs[nseg],ch:0},{line:segs[nseg+1],ch:0});
         markers.forEach(mrk=>mrk.clear());
         for (let i=segs[nseg];i<segs[nseg+1];i++) {
-            cm.doc.replaceRange(  lines[ i-segs[nseg]], {line:i,ch:0}, {line:i, ch:cm.getLine(i).length}  );
-            markOfftext(cm,i);
+            const linetext=cm.getLine(i);
+            cm.doc.replaceRange(  lines[ i-segs[nseg]], {line:i,ch:0}, {line:i, ch:linetext?.length}  );
+            linetext&&markOfftext(cm,i);
         }
     })
 }
