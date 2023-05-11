@@ -9,19 +9,25 @@ const pickerOpts = {
   excludeAcceptAllOption: true,
   multiple: false,
 };
-let workingfile,filehandle, max=0;
+let workingfile,filehandle=null, max=0;
+
+const loadText=(text,filename)=>{
+    max=loadCMText(text);
+    references.set( referencesOf(filename));
+    loadReference(0);
+    setCursorLine( parseInt(localStorage.getItem('aligner_'+filename))||1);
+}
 
 async function openOff(){
     const filehandles = await window.showOpenFilePicker(pickerOpts);
     filehandle=filehandles[0];
     workingfile=await filehandle.getFile();
-    max=loadCMText(await workingfile.text());
-    references.set( referencesOf(filehandle.name));
-    loadReference(0);
-    setCursorLine( parseInt(localStorage.getItem('aligner_'+filehandle.name))||1);
+    const text=await workingfile.text();
+    loadText(text,filehandle.name);
 }
 
 async function save(){
+    if (!filehandle) return;//test
     if (await verifyPermission( filehandle,true)) {
         const writable = await filehandle.createWritable();
         await writable.write($cm2.getValue());
@@ -30,21 +36,27 @@ async function save(){
         localStorage.setItem('aligner_'+filehandle.name, $cursorline );
     }
 }
-
+const tryit=async ()=>{
+    const response=await fetch("https://raw.githubusercontent.com/accelon/cb-n/main/off/dn3.yh.off");
+    loadText(await response.text(),"dn3.yh.off");
+}
 </script>
 <div class="Toolbar">
-<span style="font-size:120%">逐句對齊</span><span>　ver 2023.5.10</span>
+<span style="font-size:120%">逐句對齊</span><span>　ver 2023.5.11</span>
 {#each $references as reference,idx}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <span class="clickable" class:selectedRef={$selectedRef==idx} on:click={()=>loadReference(idx)}>{reference.name}</span>　
 {/each}
 {#if !$references.length}
 <a href="https://www.youtube.com/watch?v=huCbF8bAx-8" target="_new">操作示範影片</a>
+　
+<button on:click={tryit}>試試看</button>
+
 {/if}
 
 <span style="float:right">
-<button disabled={$dirty} title="alt-p" class="clickable" on:click={openOff}>📂</button>
-<button disabled={!$dirty} title="alt-s" on:click={save}>💾</button>
+<button disabled={$dirty&&filehandle} title="alt-p" class="clickable" on:click={openOff}>📂</button>
+<button disabled={!$dirty||!filehandle} title="alt-s" on:click={save}>💾</button>
 <InputNumber bind:value={$cursorline} onChange={setCursorLine} min={1} {max}/></span>
 </div>
 
