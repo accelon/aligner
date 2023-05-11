@@ -38,6 +38,9 @@ async function save(){
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <span class="clickable" class:selectedRef={$selectedRef==idx} on:click={()=>loadReference(idx)}>{reference.name}</span>　
 {/each}
+{#if !$references.length}
+<a href="https://www.youtube.com/watch?v=huCbF8bAx-8" target="_new">操作示範影片</a>
+{/if}
 
 <span style="float:right">
 <button disabled={$dirty} title="alt-p" class="clickable" on:click={openOff}>📂</button>
@@ -48,4 +51,5 @@ async function save(){
 <style>
 .Toolbar {height: 1.5em;}
 .selectedRef {background:lightyellow;color:black}
+a{color:darkcyan}
 </style>

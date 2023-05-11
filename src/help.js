@@ -9,4 +9,5 @@ Enter 折行
 Ctrl-Home 到第一行  Ctrl-End  到最末行
 頁碼輸入 按住Ctrl右前箭頭跳到最後一行
 
+
 `
