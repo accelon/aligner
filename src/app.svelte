@@ -13,7 +13,7 @@ let pos=45;
 onMount(()=>{
     const refer=new CodeMirror(lefteditor, {
 	    value:'',lineWrapping:true,
-         readOnly:true,theme:'zenburn',styleActiveLine:true
+         readOnly:true,theme:'ambiance',styleActiveLine:true
     })
     cm1.set(refer);
 

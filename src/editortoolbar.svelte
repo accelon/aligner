@@ -49,6 +49,10 @@ function handleKeydown(evt) {
         save();
     }
 }
+const tryit=async ()=>{
+    const response=await fetch("dn3.yh.off");
+    loadText(await response.text(),"dn3.yh.off");
+}
 
 </script>
 <svelte:window on:keydown={handleKeydown}/>
@@ -56,4 +60,7 @@ function handleKeydown(evt) {
 <button disabled={!$dirty||!filehandle} title="alt-s" on:click={save}>💾</button>
 <InputNumber bind:value={$cursorline} onChange={setCursorLine} min={1} {max}/>
 {filehandle?.name||''}
-    
+{#if !$references.length}
+<button on:click={tryit}>試試看</button>
+{/if}
+

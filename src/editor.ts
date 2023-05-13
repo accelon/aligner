@@ -143,6 +143,7 @@ export const beforeChange=(cm:CodeMirror,obj)=>{
             return;    
         }
     }
+
     if (origin=='+delete') { //join
         if (to.line==from.line+1 && to.ch==0) {
             joinline(cm,to.line);
@@ -150,6 +151,9 @@ export const beforeChange=(cm:CodeMirror,obj)=>{
         }
         cancel();
     } else if (origin=='+input') {
+        if (text.length==1 && text[0]==' ') {
+            syncScroll(get(cm1),get(cm2));
+        }
         if (text.length==2 && text.join('')=='') {
             breakline(cm,from.line,from.ch);
             dirty.set(true);            
