@@ -40,8 +40,7 @@ export const cursorActivity=(cm:CodeMirror, cmrefer:CodeMirror)=>{
     const cursor=cm.getCursor();
     cmrefer.doc.setCursor({line:cursor.line,ch:0})
     cursorline.set(cursor.line+1)
-
-    syncScroll(get(cm1),get(cm2));
+    if (~cm.getLine(cursor.line).indexOf('^n')) syncScroll(get(cm1),get(cm2));
 }
 export const replaceSeg=(cm,nseg,lines)=>{
     const segs=get(segments);

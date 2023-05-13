@@ -2,6 +2,7 @@
 import {onMount} from 'svelte'
 import {get} from 'svelte/store'
 import Toolbar from './toolbar.svelte'
+import EditorToolbar from './editortoolbar.svelte'
 import SplitPane from './3rdparty/splitpane.svelte';
 import {helptext} from './help.js'
 import {cm1,cm2} from './store.js';
@@ -27,23 +28,17 @@ onMount(()=>{
     loadCMText(helptext,1);
 })
 
-function handleKeydown(evt) {
-    const key=evt.key.toLowerCase();
-    const alt=evt.altKey;
-    if (key=='f5') {//prevent refresh accidently
-        evt.preventDefault();
-        return;
-    }
-}
 </script>
-<svelte:window on:keydown={handleKeydown}/>
+
 <div class="app">
-<Toolbar/>
+
 <SplitPane type="horizontal" bind:pos min={15} max={85}>
     <div slot="a">
+        <Toolbar/>
         <div bind:this={lefteditor}></div>
     </div>
     <div slot="b">
+        <EditorToolbar/>
         <div bind:this={righteditor}></div>
     </div>
 </SplitPane>
