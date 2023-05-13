@@ -11,7 +11,7 @@ import {loadReference} from "./references.ts";
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <span class="clickable" class:selectedRef={$selectedRef==idx} on:click={()=>loadReference(idx)}>{reference.name}</span>　
 {/each}
-<a href="https://www.youtube.com/watch?v=huCbF8bAx-8" target="_new">操作示範影片</a>
+<a href="https://youtu.be/2TskfhLQ9Jk" target="_new">操作示範影片</a>
 
 
 </div>
