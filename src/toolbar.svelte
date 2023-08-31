@@ -1,17 +1,17 @@
 <script>
-import {references,selectedRef} from "./store.js"
+import {APPVER,references,selectedRef} from "./store.js"
 import {loadReference} from "./references.ts";
 
 
 </script>
 
 <div class="Toolbar">
-<span style="font-size:120%">逐句對照</span><span>　ver 2023.5.13</span>
+<span style="font-size:120%">對齊</span><span>{APPVER}</span>
 {#each $references as reference,idx}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <span class="clickable" class:selectedRef={$selectedRef==idx} on:click={()=>loadReference(idx)}>{reference.name}</span>　
 {/each}
-<a href="https://youtu.be/2TskfhLQ9Jk" target="_new">操作示範影片</a>
+<a href="https://youtu.be/2TskfhLQ9Jk" target="_new">示範</a>
 
 
 </div>

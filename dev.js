@@ -14,4 +14,9 @@ let ctx=await esbuild
   })
   .catch(() => process.exit(1));
     
-await ctx.watch();
+//await ctx.watch();
+await ctx.serve({
+      servedir: 'dist',
+      port:5010,
+      host:"127.0.0.1"
+ })
