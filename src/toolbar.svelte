@@ -14,6 +14,8 @@ import {loadReference} from "./references.ts";
 {#if !$references.length}
 <a href="https://youtu.be/2TskfhLQ9Jk" target="_new">Youtube教學視頻</a>
 <a href="https://nissaya.cn/video/aligner.mp4" target="_new">无法访问油管点此</a>
+<a href="outsource.html" target="_new">应徵工作</a>
+
 {/if}
 
 </div>
